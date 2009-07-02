@@ -1,0 +1,21 @@
+Tis file documents the revision history for Perl extension Text::SimpleTable.
+
+0.06  2009-07-06 00:00:00
+        - Fixed pod coverage.
+        - Cleanup.
+
+0.05  2008-08-28 00:00:00
+        - Adden new contact information
+        - No more os x garbage files (hopefully)
+
+0.04  2008-08-28 00:00:00
+        - Removed Build.PL
+
+0.03  2006-01-17 22:00:00
+        - Fixed bug where text items of '0' were not displayed
+
+0.02  2005-11-07 00:00:00
+        - Added support for newlines
+
+0.01  2005-10-24 00:00:00
+        - first release
