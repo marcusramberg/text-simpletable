@@ -4,7 +4,7 @@ package Text::SimpleTable;
 
 use strict;
 
-our $VERSION = '1.0';
+our $VERSION = '1.1';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -70,43 +70,6 @@ sub new {
     return $self;
 }
 
-sub row {
-    my ($self, @texts) = @_;
-    my $size = @{$self->{columns}} - 1;
-
-    # Shortcut
-    return $self if $size < 0;
-
-    for (1 .. $size) {
-        last if $size <= @texts;
-        push @texts, '';
-    }
-
-    my $cache = [];
-    my $max   = 0;
-
-    for my $i (0 .. $size) {
-
-        my $text   = shift @texts;
-        my $column = $self->{columns}->[$i];
-        my $width  = $column->[0];
-        my $pieces = $self->_wrap($text, $width);
-
-        push @{$cache->[$i]}, @$pieces;
-        $max = @$pieces if @$pieces > $max;
-    }
-
-    for my $col (@{$cache}) { push @{$col}, '' while @{$col} < $max }
-
-    for my $i (0 .. $size) {
-        my $column = $self->{columns}->[$i];
-        my $store  = $column->[1];
-        push @{$store}, @{$cache->[$i]};
-    }
-
-    return $self;
-}
-
 # The implementation is not very elegant, but gets the job done very well
 sub draw {
     my $self = shift;
@@ -168,28 +131,19 @@ sub draw {
         }
 
         # Title separator
-        for my $j (0 .. $columns) {
-
-            my $column = $self->{columns}->[$j];
-            my $width  = $column->[0];
-            my $text   = $MIDDLE_BORDER x $width;
-
-            if (($j == 0) && ($columns == 0)) {
-                $text = "$MIDDLE_LEFT$text$MIDDLE_RIGHT";
-            }
-            elsif ($j == 0) { $text = "$MIDDLE_LEFT$text$MIDDLE_SEPARATOR" }
-            elsif ($j == $columns) { $text = "$text$MIDDLE_RIGHT" }
-            else                   { $text = "$text$MIDDLE_SEPARATOR" }
-
-            $output .= $text;
-        }
-
-        $output .= "\n";
+        $output .= $self->_draw_hr;
 
     }
 
     # Rows
     for my $i (0 .. $rows) {
+
+        # Check for hr
+        if (!grep { defined $self->{columns}->[$_]->[1]->[$i] } 0 .. $columns)
+        {
+            $output .= $self->_draw_hr;
+            next;
+        }
 
         for my $j (0 .. $columns) {
 
@@ -226,6 +180,78 @@ sub draw {
         elsif ($j == $columns) { $text = "$text$BOTTOM_RIGHT" }
         else                   { $text = "$text$BOTTOM_SEPARATOR" }
 
+        $output .= $text;
+    }
+
+    $output .= "\n";
+
+    return $output;
+}
+
+sub hr {
+    my $self = shift;
+
+    for (0 .. @{$self->{columns}} - 1) {
+        push @{$self->{columns}->[$_]->[1]}, undef;
+    }
+
+    return $self;
+}
+
+sub row {
+    my ($self, @texts) = @_;
+    my $size = @{$self->{columns}} - 1;
+
+    # Shortcut
+    return $self if $size < 0;
+
+    for (1 .. $size) {
+        last if $size <= @texts;
+        push @texts, '';
+    }
+
+    my $cache = [];
+    my $max   = 0;
+
+    for my $i (0 .. $size) {
+
+        my $text   = shift @texts;
+        my $column = $self->{columns}->[$i];
+        my $width  = $column->[0];
+        my $pieces = $self->_wrap($text, $width);
+
+        push @{$cache->[$i]}, @$pieces;
+        $max = @$pieces if @$pieces > $max;
+    }
+
+    for my $col (@{$cache}) { push @{$col}, '' while @{$col} < $max }
+
+    for my $i (0 .. $size) {
+        my $column = $self->{columns}->[$i];
+        my $store  = $column->[1];
+        push @{$store}, @{$cache->[$i]};
+    }
+
+    return $self;
+}
+
+sub _draw_hr {
+    my $self    = shift;
+    my $columns = @{$self->{columns}} - 1;
+    my $output  = '';
+
+    for my $j (0 .. $columns) {
+
+        my $column = $self->{columns}->[$j];
+        my $width  = $column->[0];
+        my $text   = $MIDDLE_BORDER x $width;
+
+        if (($j == 0) && ($columns == 0)) {
+            $text = "$MIDDLE_LEFT$text$MIDDLE_RIGHT";
+        }
+        elsif ($j == 0) { $text = "$MIDDLE_LEFT$text$MIDDLE_SEPARATOR" }
+        elsif ($j == $columns) { $text = "$text$MIDDLE_RIGHT" }
+        else                   { $text = "$text$MIDDLE_SEPARATOR" }
         $output .= $text;
     }
 
@@ -275,7 +301,6 @@ Text::SimpleTable - Simple Eyecandy ASCII Tables
     | arbaz | ada        |
     '-------+------------'
 
-
     my $t2 = Text::SimpleTable->new([5, 'Foo'], [10, 'Bar']);
     $t2->row('foobarbaz', 'yadayadayada');
     $t2->row('barbarbarbarbar', 'yada');
@@ -292,6 +317,23 @@ Text::SimpleTable - Simple Eyecandy ASCII Tables
     | bar   |            |
     '-------+------------'
 
+    my $t3 = Text::SimpleTable->new([5, 'Foo'], [10, 'Bar']);
+    $t3->row('foobarbaz', 'yadayadayada');
+    $t3->hr;
+    $t3->row('barbarbarbarbar', 'yada');
+    print $t3->draw;
+
+    .-------+------------.
+    | Foo   | Bar        |
+    +-------+------------+
+    | foob- | yadayaday- |
+    | arbaz | ada        |
+    +-------+------------+
+    | barb- | yada       |
+    | arba- |            |
+    | rbar- |            |
+    | bar   |            |
+    '-------+------------'
 
 =head1 DESCRIPTION
 
@@ -306,17 +348,27 @@ L<Text::SimpleTable> implements the following methods.
     my $t = Text::SimpleTable->new(5, 10);
     my $t = Text::SimpleTable->new([5, 'Col1', 10, 'Col2']);
 
-=head2 C<row>
-
-    $t = $t->row('col1 data', 'col2 data');
-
 =head2 C<draw>
 
     my $ascii = $t->draw;
 
+=head2 C<hr>
+
+    $t = $t->hr;
+
+=head2 C<row>
+
+    $t = $t->row('col1 data', 'col2 data');
+
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@cpan.org>.
+
+=head1 CREDITS
+
+In alphabetical order:
+
+Brian Cassidy
 
 =head1 COPYRIGHT
 

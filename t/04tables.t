@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use_ok('Text::SimpleTable');
 
@@ -47,6 +47,25 @@ my $t3 = Text::SimpleTable->new(5);
 $t3->row('Everything works!');
 is($t3->draw, <<EOF);
 .-------.
+| Ever- |
+| ythi- |
+| ng w- |
+| orks! |
+'-------'
+EOF
+
+# Horizontal rule
+my $t4 = Text::SimpleTable->new(5);
+$t4->row('Everything works!');
+$t4->hr;
+$t4->row('Everything works!');
+is($t4->draw, <<EOF);
+.-------.
+| Ever- |
+| ythi- |
+| ng w- |
+| orks! |
++-------+
 | Ever- |
 | ythi- |
 | ng w- |
