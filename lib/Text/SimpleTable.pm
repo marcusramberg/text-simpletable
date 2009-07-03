@@ -4,7 +4,7 @@ package Text::SimpleTable;
 
 use strict;
 
-our $VERSION = '1.1';
+our $VERSION = '1.2';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -51,6 +51,9 @@ sub new {
             $name  = $arg->[1];
         }
         else { $width = $arg }
+
+        # Fix size
+        $width = 2 if $width < 2;
 
         # Wrap
         my $title = $name ? $self->_wrap($name, $width) : [];

@@ -1,5 +1,8 @@
 Tis file documents the revision history for Perl extension Text::SimpleTable.
 
+1.2   2009-07-02 00:00:00
+        - Fixed infinite loop bug.
+
 1.1   2009-07-02 00:00:00
         - Added hr method. (bricas)
 

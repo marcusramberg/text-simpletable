@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use_ok('Text::SimpleTable');
 
@@ -71,4 +71,25 @@ is($t4->draw, <<EOF);
 | ng w- |
 | orks! |
 '-------'
+EOF
+
+# Bad width
+my $t5 = Text::SimpleTable->new(1);
+$t5->row('Works!');
+$t5->hr;
+$t5->row('Works!');
+is($t5->draw, <<EOF);
+.----.
+| W- |
+| o- |
+| r- |
+| k- |
+| s! |
++----+
+| W- |
+| o- |
+| r- |
+| k- |
+| s! |
+'----'
 EOF
