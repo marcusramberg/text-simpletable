@@ -4,7 +4,7 @@ package Text::SimpleTable;
 
 use strict;
 
-our $VERSION = '1.5';
+our $VERSION = '1.6';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -380,6 +380,6 @@ Copyright (C) 2005-2009, Sebastian Riedel.
 =head1 LICENSE
 
 This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl 5.10.
+the terms of the Artistic License version 2.0.
 
 =cut
