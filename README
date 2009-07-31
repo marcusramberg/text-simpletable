@@ -1,0 +1,8 @@
+Simple eyecandy ASCII tables.
+
+Just run the following commands to install Text::SimpleTable.
+
+    perl Makefile.PL
+    make
+    make test
+    make install
