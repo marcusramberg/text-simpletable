@@ -17,7 +17,7 @@ WriteMakefile(
     ABSTRACT     => 'Simple eyecandy ASCII tables',
     AUTHOR       => 'Sebastian Riedel <sri@cpan.org>',
 
-    ($mm < 6.3002 ? () : ('LICENSE' => 'perl')),
+    ($mm < 6.3002 ? () : ('LICENSE' => 'artistic_2')),
 
     (   $mm < 6.46
         ? ()

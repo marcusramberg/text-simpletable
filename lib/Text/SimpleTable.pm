@@ -4,7 +4,7 @@ package Text::SimpleTable;
 
 use strict;
 
-our $VERSION = '1.6';
+our $VERSION = '1.7';
 
 # Top
 our $TOP_LEFT      = '.-';
