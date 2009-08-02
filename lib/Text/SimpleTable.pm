@@ -4,7 +4,7 @@ package Text::SimpleTable;
 
 use strict;
 
-our $VERSION = '1.7';
+our $VERSION = '1.8';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -373,11 +373,9 @@ In alphabetical order:
 
 Brian Cassidy
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2005-2009, Sebastian Riedel.
-
-=head1 LICENSE
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.
