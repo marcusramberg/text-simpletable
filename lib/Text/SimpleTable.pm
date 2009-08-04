@@ -3,8 +3,9 @@
 package Text::SimpleTable;
 
 use strict;
+use warnings;
 
-our $VERSION = '1.8';
+our $VERSION = '1.9';
 
 # Top
 our $TOP_LEFT      = '.-';
