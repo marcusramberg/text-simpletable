@@ -1,5 +1,8 @@
 Tis file documents the revision history for Perl extension Text::SimpleTable.
 
+2.0   2009-08-01 00:00:00
+        - Fixed package.
+
 1.9   2009-08-01 00:00:00
         - Improved Kwalitee.
 
