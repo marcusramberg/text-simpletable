@@ -1,11 +1,11 @@
-# Copyright (C) 2005-2009, Sebastian Riedel.
+# Copyright (C) 2005-2010, Sebastian Riedel.
 
 package Text::SimpleTable;
 
 use strict;
 use warnings;
 
-our $VERSION = '2.0';
+our $VERSION = '2.01';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -376,7 +376,7 @@ Brian Cassidy
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005-2009, Sebastian Riedel.
+Copyright (C) 2005-2010, Sebastian Riedel.
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.
