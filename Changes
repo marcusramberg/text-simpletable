@@ -1,4 +1,7 @@
-Tis file documents the revision history for Perl extension Text::SimpleTable.
+This file documents the revision history for Perl extension Text::SimpleTable.
+
+2.02  2010-03-09 00:00:00
+        - Cleaned up tests.
 
 2.01  2010-03-01 00:00:00
         - Removed .perltidyrc.
