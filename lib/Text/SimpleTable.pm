@@ -5,7 +5,7 @@ package Text::SimpleTable;
 use strict;
 use warnings;
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 # Top
 our $TOP_LEFT      = '.-';
@@ -367,6 +367,10 @@ L<Text::SimpleTable> implements the following methods.
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@cpan.org>.
+
+=head1 MAINTAINER
+
+Marcus Ramberg C<mramberg@cpan.org>.
 
 =head1 CREDITS
 

@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Text::SimpleTable.
 
+2.03  2010-03-11 11:38:00
+        - New maintainer.
+
 2.02  2010-03-09 00:00:00
         - Cleaned up tests.
 
