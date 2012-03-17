@@ -119,7 +119,7 @@ sub draw {
                 my $width  = $column->[0];
                 my $text   = $column->[2]->[$i] || '';
 
-                $text = sprintf "%-${width}s", $text;
+                $text .= " " x ($width - _length($text));
 
                 if (($j == 0) && ($columns == 0)) {
                     $text = "$LEFT_BORDER$text$RIGHT_BORDER";
@@ -155,7 +155,7 @@ sub draw {
             my $width  = $column->[0];
             my $text = (defined $column->[1]->[$i]) ? $column->[1]->[$i] : '';
 
-            $text = sprintf "%-${width}s", $text;
+            $text .= " " x ($width - _length($text));
 
             if (($j == 0) && ($columns == 0)) {
                 $text = "$LEFT_BORDER$text$RIGHT_BORDER";
@@ -264,6 +264,34 @@ sub _draw_hr {
     return $output;
 }
 
+# Calc display width of utf8 on/off strings
+sub _length {
+    if (utf8::is_utf8($_[0])) {
+        my $code = do {
+            local @_;
+            if ($Unicode::GCString::VERSION or eval "require Unicode::GCString; 1") {
+                sub { utf8::is_utf8($_[0]) ? Unicode::GCString->new($_[0])->columns : length $_[0] };
+            }
+            elsif ($Text::VisualWidth::VERSION or eval "require Text::VisualWidth::UTF8; 1") {
+                sub { utf8::is_utf8($_[0]) ? Text::VisualWidth::UTF8::width($_[0]) : length $_[0] };
+            }
+            elsif ($Text::VisualWidth::PP::VERSION or eval "require Text::VisualWidth::PP; 1") {
+                sub { utf8::is_utf8($_[0]) ? Text::VisualWidth::PP::width($_[0]) : length $_[0] };
+            }
+            else {
+                sub { length $_[0] };
+            }
+        };
+
+        no strict 'refs';
+        no warnings 'redefine';
+        *{"Text::SimpleTable::_length"} = $code;
+        goto $code;
+    }
+
+    return length $_[0];
+}
+
 # Wrap text
 sub _wrap {
     my ($self, $text, $width) = @_;
@@ -273,9 +301,9 @@ sub _wrap {
 
     for my $part (@parts) {
 
-        while (length $part > $width) {
+        while (_length($part) > $width) {
             my $subtext;
-            $subtext = substr $part, 0, $width - length($WRAP), '';
+            $subtext = substr $part, 0, $width - _length($WRAP), '';
             push @cache, "$subtext$WRAP";
         }
 
