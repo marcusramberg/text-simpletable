@@ -26,7 +26,7 @@ WriteMakefile(
                 resources => {
                     license => 'http://dev.perl.org/licenses/',
                     repository =>
-                      'http://github.com/kraih/text-simpletable/tree/master'
+                      'https://github.com/marcusramberg/text-simpletable'
                 },
                 no_index => {directory => [qw/t/]}
             },
