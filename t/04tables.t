@@ -5,7 +5,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 7;
+
+binmode STDERR, ":utf8";
+binmode STDOUT, ":utf8";
 
 use_ok('Text::SimpleTable');
 
@@ -93,3 +96,18 @@ is($t5->draw, <<EOF, 'right table');
 | s! |
 '----'
 EOF
+
+# UTF-8 Titles and multiple cols
+my $t6 = Text::SimpleTable->new([5, "\x{A9}ROCKZ!"], [10, "Suckz!"], [7, "r\x{1A0}ckz!"]);
+$t6->row('Catalyst', 'DBIx::Class', 'Template::Toolkit', 'HTML::Mason');
+is($t6->draw, <<EOF, 'right table');
+.-------+------------+---------.
+| \x{A9}ROC- | Suckz!     | r\x{1A0}ckz!  |
+| KZ!   |            |         |
++-------+------------+---------+
+| Cata- | DBIx::Cla- | Templa- |
+| lyst  | ss         | te::To- |
+|       |            | olkit   |
+'-------+------------+---------'
+EOF
+
