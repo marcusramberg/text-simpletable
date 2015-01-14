@@ -5,33 +5,63 @@ package Text::SimpleTable;
 use strict;
 use warnings;
 
-our $VERSION = '2.03';
+our $VERSION = '2.04';
 
-# Top
-our $TOP_LEFT      = '.-';
-our $TOP_BORDER    = '-';
-our $TOP_SEPARATOR = '-+-';
-our $TOP_RIGHT     = '-.';
+our %ASCII_BOX = (
+	# Top
+	TOP_LEFT      => '.-',
+	TOP_BORDER    => '-',
+	TOP_SEPARATOR => '-+-',
+	TOP_RIGHT     => '-.',
 
-# Middle
-our $MIDDLE_LEFT      = '+-';
-our $MIDDLE_BORDER    = '-';
-our $MIDDLE_SEPARATOR = '-+-';
-our $MIDDLE_RIGHT     = '-+';
+	# Middle
+	MIDDLE_LEFT      => '+-',
+	MIDDLE_BORDER    => '-',
+	MIDDLE_SEPARATOR => '-+-',
+	MIDDLE_RIGHT     => '-+',
 
-# Left
-our $LEFT_BORDER  = '| ';
-our $SEPARATOR    = ' | ';
-our $RIGHT_BORDER = ' |';
+	# Left
+	LEFT_BORDER  => '| ',
+	SEPARATOR    => ' | ',
+	RIGHT_BORDER => ' |',
 
-# Bottom
-our $BOTTOM_LEFT      = "'-";
-our $BOTTOM_SEPARATOR = "-+-";
-our $BOTTOM_BORDER    = '-';
-our $BOTTOM_RIGHT     = "-'";
+	# Bottom
+	BOTTOM_LEFT      => "'-",
+	BOTTOM_SEPARATOR => "-+-",
+	BOTTOM_BORDER    => '-',
+	BOTTOM_RIGHT     => "-'",
 
-# Wrapper
-our $WRAP = '-';
+	# Wrapper
+	WRAP => '-',
+);
+
+our %UTF_BOX = (
+	# Top
+	TOP_LEFT      => "\x{250c}\x{2500}",
+	TOP_BORDER    => "\x{2500}",
+	TOP_SEPARATOR => "\x{2500}\x{252c}\x{2500}",
+	TOP_RIGHT     => "\x{2500}\x{2510}",
+
+	# Middle
+	MIDDLE_LEFT      => "\x{251c}\x{2500}",
+	MIDDLE_BORDER    => "\x{2500}",
+	MIDDLE_SEPARATOR => "\x{2500}\x{253c}\x{2500}",
+	MIDDLE_RIGHT     => "\x{2500}\x{2524}",
+
+	# Left
+	LEFT_BORDER  => "\x{2502} ",
+	SEPARATOR    => " \x{2502} ",
+	RIGHT_BORDER => " \x{2502}",
+
+	# Bottom
+	BOTTOM_LEFT      => "\x{2514}\x{2500}",
+	BOTTOM_SEPARATOR => "\x{2500}\x{2534}\x{2500}",
+	BOTTOM_BORDER    => "\x{2500}",
+	BOTTOM_RIGHT     => "\x{2500}\x{2518}",
+
+	# Wrapper
+	WRAP => '-',
+);
 
 sub new {
     my ($class, @args) = @_;
@@ -39,6 +69,8 @@ sub new {
     # Instantiate
     $class = ref $class || $class;
     my $self = bless {}, $class;
+
+    $self->{chs} = \%ASCII_BOX;
 
     # Columns and titles
     my $cache = [];
@@ -90,14 +122,14 @@ sub draw {
 
         my $column = $self->{columns}->[$j];
         my $width  = $column->[0];
-        my $text   = $TOP_BORDER x $width;
+        my $text   = $self->{chs}->{TOP_BORDER} x $width;
 
         if (($j == 0) && ($columns == 0)) {
-            $text = "$TOP_LEFT$text$TOP_RIGHT";
+            $text = "$self->{chs}->{TOP_LEFT}$text$self->{chs}->{TOP_RIGHT}";
         }
-        elsif ($j == 0)        { $text = "$TOP_LEFT$text$TOP_SEPARATOR" }
-        elsif ($j == $columns) { $text = "$text$TOP_RIGHT" }
-        else                   { $text = "$text$TOP_SEPARATOR" }
+        elsif ($j == 0)        { $text = "$self->{chs}->{TOP_LEFT}$text$self->{chs}->{TOP_SEPARATOR}" }
+        elsif ($j == $columns) { $text = "$text$self->{chs}->{TOP_RIGHT}" }
+        else                   { $text = "$text$self->{chs}->{TOP_SEPARATOR}" }
 
         $output .= $text;
     }
@@ -122,11 +154,11 @@ sub draw {
                 $text .= " " x ($width - _length($text));
 
                 if (($j == 0) && ($columns == 0)) {
-                    $text = "$LEFT_BORDER$text$RIGHT_BORDER";
+                    $text = "$self->{chs}->{LEFT_BORDER}$text$self->{chs}->{RIGHT_BORDER}";
                 }
-                elsif ($j == 0) { $text = "$LEFT_BORDER$text$SEPARATOR" }
-                elsif ($j == $columns) { $text = "$text$RIGHT_BORDER" }
-                else                   { $text = "$text$SEPARATOR" }
+                elsif ($j == 0) { $text = "$self->{chs}->{LEFT_BORDER}$text$self->{chs}->{SEPARATOR}" }
+                elsif ($j == $columns) { $text = "$text$self->{chs}->{RIGHT_BORDER}" }
+                else                   { $text = "$text$self->{chs}->{SEPARATOR}" }
 
                 $output .= $text;
             }
@@ -158,11 +190,11 @@ sub draw {
             $text .= " " x ($width - _length($text));
 
             if (($j == 0) && ($columns == 0)) {
-                $text = "$LEFT_BORDER$text$RIGHT_BORDER";
+                $text = "$self->{chs}->{LEFT_BORDER}$text$self->{chs}->{RIGHT_BORDER}";
             }
-            elsif ($j == 0)        { $text = "$LEFT_BORDER$text$SEPARATOR" }
-            elsif ($j == $columns) { $text = "$text$RIGHT_BORDER" }
-            else                   { $text = "$text$SEPARATOR" }
+            elsif ($j == 0)        { $text = "$self->{chs}->{LEFT_BORDER}$text$self->{chs}->{SEPARATOR}" }
+            elsif ($j == $columns) { $text = "$text$self->{chs}->{RIGHT_BORDER}" }
+            else                   { $text = "$text$self->{chs}->{SEPARATOR}" }
 
             $output .= $text;
         }
@@ -175,14 +207,14 @@ sub draw {
 
         my $column = $self->{columns}->[$j];
         my $width  = $column->[0];
-        my $text   = $BOTTOM_BORDER x $width;
+        my $text   = $self->{chs}->{BOTTOM_BORDER} x $width;
 
         if (($j == 0) && ($columns == 0)) {
-            $text = "$BOTTOM_LEFT$text$BOTTOM_RIGHT";
+            $text = "$self->{chs}->{BOTTOM_LEFT}$text$self->{chs}->{BOTTOM_RIGHT}";
         }
-        elsif ($j == 0) { $text = "$BOTTOM_LEFT$text$BOTTOM_SEPARATOR" }
-        elsif ($j == $columns) { $text = "$text$BOTTOM_RIGHT" }
-        else                   { $text = "$text$BOTTOM_SEPARATOR" }
+        elsif ($j == 0) { $text = "$self->{chs}->{BOTTOM_LEFT}$text$self->{chs}->{BOTTOM_SEPARATOR}" }
+        elsif ($j == $columns) { $text = "$text$self->{chs}->{BOTTOM_RIGHT}" }
+        else                   { $text = "$text$self->{chs}->{BOTTOM_SEPARATOR}" }
 
         $output .= $text;
     }
@@ -190,6 +222,14 @@ sub draw {
     $output .= "\n";
 
     return $output;
+}
+
+sub boxes {
+    my $self = shift;
+
+    $self->{chs} = \%UTF_BOX;
+
+    return $self;
 }
 
 sub hr {
@@ -248,14 +288,14 @@ sub _draw_hr {
 
         my $column = $self->{columns}->[$j];
         my $width  = $column->[0];
-        my $text   = $MIDDLE_BORDER x $width;
+        my $text   = $self->{chs}->{MIDDLE_BORDER} x $width;
 
         if (($j == 0) && ($columns == 0)) {
-            $text = "$MIDDLE_LEFT$text$MIDDLE_RIGHT";
+            $text = "$self->{chs}->{MIDDLE_LEFT}$text$self->{chs}->{MIDDLE_RIGHT}";
         }
-        elsif ($j == 0) { $text = "$MIDDLE_LEFT$text$MIDDLE_SEPARATOR" }
-        elsif ($j == $columns) { $text = "$text$MIDDLE_RIGHT" }
-        else                   { $text = "$text$MIDDLE_SEPARATOR" }
+        elsif ($j == 0) { $text = "$self->{chs}->{MIDDLE_LEFT}$text$self->{chs}->{MIDDLE_SEPARATOR}" }
+        elsif ($j == $columns) { $text = "$text$self->{chs}->{MIDDLE_RIGHT}" }
+        else                   { $text = "$text$self->{chs}->{MIDDLE_SEPARATOR}" }
         $output .= $text;
     }
 
@@ -303,8 +343,8 @@ sub _wrap {
 
         while (_length($part) > $width) {
             my $subtext;
-            $subtext = substr $part, 0, $width - _length($WRAP), '';
-            push @cache, "$subtext$WRAP";
+            $subtext = substr $part, 0, $width - _length($self->{chs}->{WRAP}), '';
+            push @cache, "$subtext$self->{chs}->{WRAP}";
         }
 
         push @cache, $part if defined $part;
@@ -315,6 +355,8 @@ sub _wrap {
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -367,6 +409,20 @@ Text::SimpleTable - Simple Eyecandy ASCII Tables
     | bar   |            |
     '-------+------------'
 
+    print $t3->boxes->draw;
+
+    ┌───────┬────────────┐
+    │ Foo   │ Bar        │
+    ├───────┼────────────┤
+    │ foob- │ yadayaday- │
+    │ arbaz │ ada        │
+    ├───────┼────────────┤
+    │ barb- │ yada       │
+    │ arba- │            │
+    │ rbar- │            │
+    │ bar   │            │
+    └───────┴────────────┘
+
 =head1 DESCRIPTION
 
 Simple eyecandy ASCII tables.
@@ -391,6 +447,13 @@ L<Text::SimpleTable> implements the following methods.
 =head2 C<row>
 
     $t = $t->row('col1 data', 'col2 data');
+
+=head2 C<boxes>
+
+    $t = $t->boxes;
+
+C<boxes> switches the output generated by C<draw> to use the unicode box drawing characters. The last 
+example above may not render nicely on some devices. 
 
 =head1 AUTHOR
 

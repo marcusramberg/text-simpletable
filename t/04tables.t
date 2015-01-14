@@ -4,8 +4,9 @@
 
 use strict;
 use warnings;
+use utf8;
 
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 binmode STDERR, ":utf8";
 binmode STDOUT, ":utf8";
@@ -109,5 +110,35 @@ is($t6->draw, <<EOF, 'right table');
 | lyst  | ss         | te::To- |
 |       |            | olkit   |
 '-------+------------+---------'
+EOF
+
+# UTF-8 Titles and multiple cols with boxes
+is($t6->boxes->draw, <<EOF, 'right table');
+┌───────┬────────────┬─────────┐
+│ ©ROC- │ Suckz!     │ rƠckz!  │
+│ KZ!   │            │         │
+├───────┼────────────┼─────────┤
+│ Cata- │ DBIx::Cla- │ Templa- │
+│ lyst  │ ss         │ te::To- │
+│       │            │ olkit   │
+└───────┴────────────┴─────────┘
+EOF
+
+my $t7 = Text::SimpleTable->new([5, 'Foo'], [10, 'Bar']);
+$t7->row('foobarbaz', 'yadayadayada');
+$t7->hr;
+$t7->row('barbarbarbarbar', 'yada');
+is($t7->boxes->draw, <<EOF, 'right table');
+┌───────┬────────────┐
+│ Foo   │ Bar        │
+├───────┼────────────┤
+│ foob- │ yadayaday- │
+│ arbaz │ ada        │
+├───────┼────────────┤
+│ barb- │ yada       │
+│ arba- │            │
+│ rbar- │            │
+│ bar   │            │
+└───────┴────────────┘
 EOF
 
