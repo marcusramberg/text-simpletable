@@ -343,7 +343,16 @@ sub _wrap {
 
         while (_length($part) > $width) {
             my $subtext;
-            $subtext = substr $part, 0, $width - _length($self->{chs}->{WRAP}), '';
+            if (length($part) == _length($part)) {
+                $subtext = substr $part, 0, $width - _length($self->{chs}->{WRAP}), '';
+            }
+            else {
+                my $subtext_width = $width + 1;
+                do {
+                    $subtext = substr $part, 0, --$subtext_width;
+                } until _length($subtext) <= $width - _length($self->{chs}->{WRAP}) || $subtext_width <= 0;
+                $subtext = substr $part, 0, $subtext_width, '';
+            }
             push @cache, "$subtext$self->{chs}->{WRAP}";
         }
 
