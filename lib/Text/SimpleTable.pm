@@ -338,19 +338,21 @@ sub _wrap {
 
     my @cache;
     my @parts = split "\n", $text;
+    my $chs_width = _length($self->{chs}->{WRAP});
 
     for my $part (@parts) {
 
         while (_length($part) > $width) {
             my $subtext;
-            if (length($part) == _length($part)) {
-                $subtext = substr $part, 0, $width - _length($self->{chs}->{WRAP}), '';
+            unless (utf8::is_utf8($part)) {
+                $subtext = substr $part, 0, $width - $chs_width, '';
             }
             else {
-                my $subtext_width = $width + 1;
-                do {
-                    $subtext = substr $part, 0, --$subtext_width;
-                } until _length($subtext) <= $width - _length($self->{chs}->{WRAP}) || $subtext_width <= 0;
+                my $subtext_width = $width - $chs_width;
+                my $substr_len;
+                while (($substr_len = _length(substr $part, 0, $subtext_width)) > $width - $chs_width) {
+                    --$subtext_width;
+                }
                 $subtext = substr $part, 0, $subtext_width, '';
             }
             push @cache, "$subtext$self->{chs}->{WRAP}";
