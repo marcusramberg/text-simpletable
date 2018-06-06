@@ -5,7 +5,7 @@ package Text::SimpleTable;
 use strict;
 use warnings;
 
-our $VERSION = '2.04';
+our $VERSION = '2.05';
 
 our %ASCII_BOX = (
 	# Top
