@@ -25,7 +25,16 @@ WriteMakefile(
                 dynamic_config => 0,
                 'meta-spec' => {version => 2},
                 no_index => {directory => [qw/t/]},
-                prereqs => {runtime => {requires => {perl => '5.008001'}}},
+                prereqs => {
+                    runtime => {
+                        requires => {
+                            perl => '5.008001'
+                        },
+                        recommends => {
+                            'Unicode::LineBreak' => 0,
+                        },
+                    }
+                },
                 resources => {
                     license => ['http://www.opensource.org/licenses/artistic-license-2.0'],
                     repository => {
