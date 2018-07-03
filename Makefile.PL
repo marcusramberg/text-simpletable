@@ -32,6 +32,8 @@ WriteMakefile(
                         },
                         recommends => {
                             'Unicode::LineBreak' => 0,
+                            'Text::VisualWidth::UTF8' => 0,
+                            'Text::VisualWidth::PP' => 0,
                         },
                     }
                 },
